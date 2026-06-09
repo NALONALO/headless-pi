@@ -10,6 +10,12 @@ if (!fs.existsSync(extPath)) {
     process.exit(1);
 }
 
+// If not running in a true TTY (like in agent background tasks), trick Pi into thinking it is!
+// This entirely bypasses Pi's pipe reading logic, preventing infinite hangs without closing the stream.
+if (!process.stdin.isTTY) {
+    Object.defineProperty(process.stdin, 'isTTY', { value: true });
+}
+
 // Prepend the extension flags into process.argv so the Pi parser sees them natively
 process.argv.splice(2, 0, '-e', extPath, '--stream=all');
 
