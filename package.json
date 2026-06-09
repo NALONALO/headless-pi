@@ -1,0 +1,14 @@
+{
+  "name": "headless-pi",
+  "version": "1.0.1",
+  "description": "Headless streaming wrapper for Pi coding agent",
+  "main": "index.js",
+  "bin": {
+    "headless-pi": "index.js"
+  },
+  "author": "Antigravity",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^5.0.0"
+  }
+}
