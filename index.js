@@ -16,8 +16,15 @@ if (!process.stdin.isTTY) {
     Object.defineProperty(process.stdin, 'isTTY', { value: true });
 }
 
+// Check if the user already provided a --stream flag
+const hasStreamFlag = process.argv.some(arg => arg.startsWith('--stream'));
+
 // Prepend the extension flags into process.argv so the Pi parser sees them natively
-process.argv.splice(2, 0, '-e', extPath, '--stream=all');
+if (hasStreamFlag) {
+    process.argv.splice(2, 0, '-e', extPath);
+} else {
+    process.argv.splice(2, 0, '-e', extPath, '--stream=message');
+}
 
 try {
     // Dynamically locate the global Pi installation via npm

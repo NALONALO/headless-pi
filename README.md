@@ -13,19 +13,31 @@ Natively, running `pi -p "prompt"` in a non-interactive background task acts lik
 When delegating multi-step tasks to an autonomous local LLM subagent, you should use this wrapper instead of `pi` directly.
 
 ### 1. Always use `headless-pi`
-Launch background tasks via terminal commands using:
+Launch background tasks via terminal commands. By default, it streams only the conversational agent message text (`--stream=message`) to reduce log verbosity:
 ```bash
 headless-pi -p "Execute the plan outlined in /path/to/plan.md"
 ```
 
-### 2. Wait Asynchronously
-If you are calling this programmatically, run the command in the background. You will receive live streaming updates in the task log as `headless-pi` executes the ReAct loop.
+### 2. Stream Configuration & Verbosity
+You can customize the streaming verbosity using the `--stream` flag:
+- `--stream=message` (Default): Streams only conversational text messages (`MESSAGE`).
+- `--stream=thinking`: Streams only thinking monologues (`THINKING`).
+- `--stream=tools`: Streams only tool executions and results (`CALLING TOOL` / `TOOL RESULT`).
+- `--stream=all`: Streams all events (thinking, messages, and tools).
+- `--stream=off`: Disables streaming.
+
+Example to stream everything:
+```bash
+headless-pi --stream=all -p "Execute the plan outlined in /path/to/plan.md"
+```
+
+Since the parser checks for substring inclusion, you can also combine options, e.g., `--stream=message,thinking`.
 
 ### 3. Log Structure
-The streaming output contains highly parseable tags:
-- `[THINKING]`: The LLM's internal monologue
-- `[MESSAGE]`: The LLM's conversational text
-- `[CALLING TOOL: <tool>]`: The LLM executing a tool with arguments
-- `[TOOL RESULT: <tool>]`: The executed output of the tool
+The streaming output contains formatted tags depending on your stream settings:
+- `▶ THINKING`: The LLM's internal monologue
+- `▶ MESSAGE`: The LLM's conversational text
+- `▶ CALLING TOOL: <tool>`: The LLM executing a tool with arguments
+- `▶ TOOL RESULT: <tool>` / `▶ TOOL ERROR: <tool>`: The result or error of the tool execution
 
 By reading the task logs of `headless-pi`, you maintain full observability over the subagent's execution state without ever being blocked by a black box execution.
