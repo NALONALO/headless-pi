@@ -46,20 +46,35 @@ export default function headlessStreamingExtension(pi: ExtensionAPI): void {
         process.stderr.write(`\n${color}▶ ${label}${COLORS.RESET}\n`);
     }
 
+    let hasPrintedThinkingHeader = false;
+    let hasPrintedTextHeader = false;
+
     pi.on("message_update", async (event) => {
         const streamFlag = pi.getFlag("stream") || "off";
         if (streamFlag === "off") return;
         const e = event.assistantMessageEvent;
         if (!e) return;
 
-        if (e.type === "thinking_start" && (streamFlag.includes("thinking") || streamFlag.includes("all"))) {
-            logHeader(COLORS.THINKING, "THINKING");
+        if (e.type === "thinking_start") {
+            hasPrintedThinkingHeader = false;
         } else if (e.type === "thinking_delta" && (streamFlag.includes("thinking") || streamFlag.includes("all"))) {
-            process.stderr.write(COLORS.THINKING + e.delta + COLORS.RESET);
-        } else if (e.type === "text_start" && (streamFlag.includes("message") || streamFlag.includes("all"))) {
-            logHeader(COLORS.TEXT, "MESSAGE");
+            if (!hasPrintedThinkingHeader && e.delta.trim()) {
+                logHeader(COLORS.THINKING, "THINKING");
+                hasPrintedThinkingHeader = true;
+            }
+            if (hasPrintedThinkingHeader) {
+                process.stderr.write(COLORS.THINKING + e.delta + COLORS.RESET);
+            }
+        } else if (e.type === "text_start") {
+            hasPrintedTextHeader = false;
         } else if (e.type === "text_delta" && (streamFlag.includes("message") || streamFlag.includes("all"))) {
-            process.stderr.write(COLORS.TEXT + e.delta + COLORS.RESET);
+            if (!hasPrintedTextHeader && e.delta.trim()) {
+                logHeader(COLORS.TEXT, "MESSAGE");
+                hasPrintedTextHeader = true;
+            }
+            if (hasPrintedTextHeader) {
+                process.stderr.write(COLORS.TEXT + e.delta + COLORS.RESET);
+            }
         }
     });
 
