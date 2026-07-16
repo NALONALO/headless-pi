@@ -1,6 +1,6 @@
 {
   "name": "headless-pi",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Headless streaming wrapper for Pi coding agent",
   "main": "index.js",
   "bin": {

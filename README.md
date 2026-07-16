@@ -8,6 +8,39 @@ Natively, running `pi -p "prompt"` in a non-interactive background task acts lik
 ## How it Works
 `headless-pi` bundles a custom TypeScript extension (`stream-output.ts`) and dynamically injects it into Pi natively via the `-e` flag. This extension explicitly hooks into Pi's event lifecycle and streams beautifully formatted ANSI output (Thoughts, Text, and Tool Executions) directly to `stderr` in real-time.
 
+## Installation & Usage
+
+### 1. Prerequisites
+Ensure the standard Pi coding agent is installed globally:
+```bash
+npm install -g @earendil-works/pi-coding-agent
+```
+
+### 2. Installation
+Install `headless-pi` globally from the local source directory:
+```bash
+npm install -g .
+```
+
+### 3. Basic Usage
+Use it exactly like the standard `pi` command. For example:
+```bash
+headless-pi -p "Your prompt here"
+```
+
+#### CLI Options
+`headless-pi` introduces custom flags alongside standard `pi` options:
+
+*   `--stream=<value>`: Customize what events are streamed live to `stderr` in real-time.
+    *   `message` (Default): Streams conversational text.
+    *   `thinking`: Streams the internal thinking monologue.
+    *   `tools`: Streams tool calls, running updates, results, and errors.
+    *   `all`: Streams all events (thinking, messages, tools).
+    *   `off`: Disables streaming completely.
+    
+    *Note: You can combine values using comma separation, e.g. `--stream=message,thinking`.*
+
+
 ## Master Agent Guidelines
 
 When delegating multi-step tasks to an autonomous local LLM subagent, you should use this wrapper instead of `pi` directly.

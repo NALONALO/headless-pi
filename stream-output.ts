@@ -39,7 +39,7 @@ export default function headlessStreamingExtension(pi: ExtensionAPI): void {
     pi.registerFlag("stream", {
         description: "Streams live output (message,thinking,tools,all)",
         type: "string",
-        default: "off"
+        default: "message"
     });
     
     function logHeader(color: string, label: string) {
