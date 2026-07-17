@@ -40,6 +40,9 @@ headless-pi -p "Your prompt here"
     
     *Note: You can combine values using comma separation, e.g. `--stream=message,thinking`.*
 
+> [!NOTE]
+> **Interactive Mode**: You can still run `headless-pi` in interactive mode (without the `-p` prompt flag). However, stream output filtering (`--stream`) is not supported and will not filter the console output when running interactively.
+
 
 ## Master Agent Guidelines
 
